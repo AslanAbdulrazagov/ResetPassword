@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Authentication;
+using System.ComponentModel.DataAnnotations;
 
 namespace PB303Fashion.Models
 {
@@ -7,5 +8,6 @@ namespace PB303Fashion.Models
         public string Username {  get; set; }
         [DataType(DataType.Password)]
         public string Password { get; set; }
+        public IEnumerable<AuthenticationScheme>? Schemes { get; set; }
     }
 }

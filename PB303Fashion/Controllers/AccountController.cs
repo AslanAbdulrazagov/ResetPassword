@@ -5,6 +5,7 @@ using PB303Fashion.DataAccessLayer.Entities;
 using PB303Fashion.Models;
 using System.Net.Mail;
 using System.Net;
+using System.Security.Claims;
 
 namespace PB303Fashion.Controllers
 {
@@ -69,9 +70,13 @@ namespace PB303Fashion.Controllers
             return RedirectToAction("index", "home");
         }
 
-        public IActionResult Login()
+        public async Task<IActionResult> Login()
         {
-            return View();
+            var vm = new LoginViewModel()
+            {
+                Schemes = await _signInManager.GetExternalAuthenticationSchemesAsync()
+            };
+            return View(vm);
         }
 
         [HttpPost]
@@ -192,6 +197,65 @@ namespace PB303Fashion.Controllers
 
             return RedirectToAction(nameof(Login));
         }
-        
+        public IActionResult ExternalLogin(string provider)
+        {
+            var redirectUrl = Url.Action("ExternalLoginCallback", "Account");
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            return new ChallengeResult(provider, properties);
+        }
+
+        public async Task<IActionResult> ExternalLoginCallback(string remoteError = "")
+        {
+          
+            var model = new LoginViewModel()
+            {
+                Schemes = await _signInManager.GetExternalAuthenticationSchemesAsync()
+            };
+            if (!string.IsNullOrEmpty(remoteError))
+            {
+                ModelState.AddModelError("", $"{remoteError}");
+                return View(nameof(Login), model);
+            }
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+            {
+                ModelState.AddModelError("", $"{remoteError}");
+                return View(nameof(Login), model);
+            }
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: true, bypassTwoFactor: true);
+            if (result.Succeeded) return RedirectToAction("Index", "Home");
+            else
+            {
+                var eMail = info.Principal.FindFirstValue(ClaimTypes.Email);
+                if (!string.IsNullOrEmpty(eMail))
+                {
+                    var user = await _userManager.FindByEmailAsync(eMail);
+                    if (user == null)
+                    {
+                        user = new AppUser()
+                        {
+                            Email = eMail,
+                            UserName = eMail,
+                            EmailConfirmed = true
+                        };
+                        var createResult = await _userManager.CreateAsync(user);
+                        if (!createResult.Succeeded)
+                        {
+
+                            return View(nameof(Login), model);
+                        }
+                        var addLoginResult = await _userManager.AddLoginAsync(user, info);
+                        if (!addLoginResult.Succeeded)
+                        {
+                            return View(nameof(Login), model);
+                        }
+                    }
+                    await _signInManager.SignInAsync(user, isPersistent: true);
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            ModelState.AddModelError("", "Went wrong");
+            return View(nameof(Login), model);
+        }
     }
 }

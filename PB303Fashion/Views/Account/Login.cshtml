@@ -47,6 +47,12 @@
                                 <div class="mt-3">
                                     <button type="submit" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">Login</button>
                                 </div>
+                                <form method="post">
+
+                                    <button asp-action="externalLogin" asp-controller="account" asp-route-provider="Google" >
+                                        Sign in with Google
+                                    </button>
+                                    </form>
                                 <div class="text-center mt-4 font-weight-light">
                                     Already have an account? <a asp-action="register" class="text-primary">Register</a>
                                 </div>

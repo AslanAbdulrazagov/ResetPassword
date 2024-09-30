@@ -43,6 +43,12 @@ namespace PB303Fashion
             Constants.CategoryImagePath = Path.Combine(builder.Environment.WebRootPath, "assets", "svg", "fashion");
             Constants.GalleryImagePath = Path.Combine(builder.Environment.WebRootPath, "assets", "images", "gallery");
 
+            builder.Services.AddAuthentication().AddGoogle(options =>
+            {
+                options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+                options.ClientSecret= builder.Configuration["Authentication:Google:ClientSecret"];
+            });
+
             var app = builder.Build();
 
             using (var scope = app.Services.CreateScope())
