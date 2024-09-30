@@ -1,0 +1,22 @@
+﻿@model Gallery
+<div class="row">
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <p class="card-description">
+                    Create galery
+                </p>
+                <form class="forms-sample" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Sekil</label>
+                        <input asp-for="Images" class="form-control" accept="image/*">
+                        <span asp-validation-for="Images"></span>
+                    </div>
+                    <div asp-validation-summary="ModelOnly"></div>
+                    <button type="submit" class="btn btn-primary mr-2">Create</button>
+                    <a class="btn btn-light" asp-action="index">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

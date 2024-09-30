@@ -1,0 +1,44 @@
+﻿@model Product
+<div class="row">
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Default form</h4>
+                <p class="card-description">
+                    Create product
+                </p>
+                <form class="forms-sample" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input asp-for="Name" class="form-control" placeholder="name">
+                        <span asp-validation-for="Name"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Price</label>
+                        <input asp-for="Price" class="form-control" placeholder="Price">
+                        <span asp-validation-for="Price"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select asp-for="CategoryId" asp-items="@Model.CategoryListItems" class="form-control" placeholder="Category"></select>
+                        <span asp-validation-for="Category"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Sekil</label>
+                        <input asp-for="ImageFile" class="form-control" accept="image/*">
+                        <span asp-validation-for="ImageFile"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary mr-2">Create</button>
+                    <a class="btn btn-light" asp-action="index">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        console.log("hello");
+    </script>
+}
+

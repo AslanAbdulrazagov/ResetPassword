@@ -1,0 +1,13 @@
+﻿@model Category
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<img src="~/assets/svg/fashion/@Model.ImageUrl" width="300px" height="400px"/>
+<h4>@Model.Name</h4>
+
+<form method="post" asp-action="DeleteCategory" asp-route-id="@Model.Id">
+@*     <input  asp-for="Id" type="hidden"/>
+ *@    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+    <a asp-controller="category" asp-action="index">Legv et</a>
+</form>
